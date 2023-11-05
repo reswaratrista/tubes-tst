@@ -1,5 +1,5 @@
 from typing import Optional, List
-from pydantic import conint
+from pydantic import BaseModel, conint
 from sqlmodel import JSON, SQLModel, Field, Column
 
 class SimilaritiesBase(BaseModel):
