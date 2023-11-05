@@ -23,3 +23,7 @@ class User(SQLModel, table=True):
 
     class Settings:
         name = "users"
+
+class UserSignIn(BaseModel):
+    username: str
+    password: str
