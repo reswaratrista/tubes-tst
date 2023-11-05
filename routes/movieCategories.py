@@ -2,7 +2,7 @@ from typing import List
 
 from database.connection import Database, get_session
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from models.movies import MovieCategory
+from models.movieCategories import MovieCategory
 from sqlmodel import select
 
 moviecategory_router = APIRouter(

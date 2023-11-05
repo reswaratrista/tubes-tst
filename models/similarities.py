@@ -10,8 +10,8 @@ class SimilarityField(BaseModel):
     similarity: conint(ge=1, le=5)
 
 class Similarity(SQLModel, table=True):
-    movieId1: int = Field(default=None)
-    movieId2: int = Field(default=None)
+    movieId1: int = Field(default=None, primary_key=True, foreign_key='movie.movieId')
+    movieId2: int = Field(default=None, primary_key=True, foreign_key='movie.movieId')
     similarity: int
 
     class Settings:
