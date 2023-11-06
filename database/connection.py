@@ -9,6 +9,7 @@ from models.movies import Movie
 from models.movieCategories import MovieCategory
 from models.similarities import Similarity
 from models.categories import Category
+from models.histories import History
 
 database_file = "movie.db"
 database_connection_string = f"sqlite:///{database_file}"
@@ -28,7 +29,7 @@ class Settings(BaseSettings):
     async def initialize_database(self):
         client = AsyncIOMotorClient(self.DATABASE_URL)
         await init_beanie(database=client.get_default_database(),
-                          document_models=[User, Movie, Category, MovieCategory, Similarity])
+                          document_models=[User, Movie, Category, MovieCategory, Similarity, History])
 
     class Config:
         env_file = ".env"
