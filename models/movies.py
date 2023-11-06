@@ -18,10 +18,17 @@ class Movie(SQLModel, table=True):
                 "avgWatchTime" : "00:00:00",
             }
         }
-        
-
 
     class Settings:
         name = "movies"
 
+class MovieUpdate(BaseModel):
+    movieName: str
+    duration: str 
+    avgWatchTime: str
+
+class newMovie(BaseModel):
+    movieName: str
+    duration: str 
+    avgWatchTime: str
         

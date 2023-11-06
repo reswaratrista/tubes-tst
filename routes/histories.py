@@ -26,11 +26,23 @@ async def retrieve_all_history(movie_id: int, session=Depends(get_session)) -> H
 
 @history_router.post("/new")
 async def create_history(new_history: newHistory, session=Depends(get_session)) -> dict:
-    history = History(**new_history.dict())
-    session.add(history)
+    # Create a new History object
+    new_history_obj = History(
+        username=new_history.username,
+        movieId=new_history.movieId,
+        watchedDuration=new_history.watchedDuration,
+    )
+
+    # Add and commit the new history record
+    session.add(new_history_obj)
     session.commit()
-    session.refresh(history)
+
+    # Refresh the new history object to obtain the generated historyId
+    session.refresh(new_history_obj)
+
+    # Update the average watch time for the related movie
     update_avg_watch_time(session, new_history.movieId)
+
     return {
         "message": "History created successfully"
     }

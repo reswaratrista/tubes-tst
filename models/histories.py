@@ -21,7 +21,6 @@ class History(SQLModel, table=True):
         name = "histories"
 
 class newHistory(BaseModel):
-    historyId: int
     username: str
     movieId: int
     watchedDuration: str
