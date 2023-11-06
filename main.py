@@ -7,6 +7,7 @@ from routes.movies import movie_router
 from routes.movieCategories import moviecategory_router
 from routes.similarities import similarity_router
 from routes.categories import category_router
+from routes.histories import history_router
 from database.connection import conn
 
 app = FastAPI()
@@ -17,6 +18,7 @@ app.include_router(movie_router, prefix="/movie")
 app.include_router(moviecategory_router, prefix="/moviecategory")
 app.include_router(similarity_router, prefix="/similarity")
 app.include_router(category_router, prefix="/category")
+app.include_router(history_router, prefix="/history")
 
 
 @app.on_event("startup")
