@@ -2,7 +2,6 @@ from typing import List
 from database.connection import Database, get_session
 from fastapi import APIRouter, Depends, HTTPException, Request, status, Query
 from models.movies import Movie
-from models.histories import History
 from sqlmodel import Session, select
 
 movie_router = APIRouter(

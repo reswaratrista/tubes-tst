@@ -8,5 +8,8 @@ class History(SQLModel, table=True):
     movieId: int = Field(default=None, primary_key=True, foreign_key='movie.movieId')
     watchedDuration: time
 
+    def __str__(self):
+        return self.watchedDuration.isoformat()
+
     class Settings:
         name = "history"

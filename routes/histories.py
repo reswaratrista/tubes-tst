@@ -33,3 +33,4 @@ session=Depends(get_session)) -> dict:
         "message": "History created successfully"
 }
 
+

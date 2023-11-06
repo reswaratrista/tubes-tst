@@ -7,10 +7,6 @@ class Movie(SQLModel, table=True):
     movieId: int = Field(default=None, primary_key=True)
     movieName: str
     duration: time
-
-    class Settings:
-        name = "movies"
-
     class Config:
         arbitrary_types_allowed = True
         schema_extra = {
@@ -21,5 +17,10 @@ class Movie(SQLModel, table=True):
             }
         }
 
+    def __str__(self):
+        return self.watchedDuration.isoformat()
+        
     class Settings:
         name = "movies"
+
+        
