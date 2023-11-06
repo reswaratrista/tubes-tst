@@ -19,10 +19,10 @@ async def retrieve_all_movies(session=Depends(get_session)) -> List[Movie]:
 
 @movie_router.get("/{movieId}")
 def get_movie_by_id(movieId: int, session: Session = Depends(get_session)):
-    user = session.exec(select(Movie).where(Movie.movieId == movieId)).first()
-    if user is None:
+    movie = session.exec(select(Movie).where(Movie.movieId == movieId)).first()
+    if movie is None:
         raise HTTPException(status_code=404, detail="User not found")
-    return user
+    return movie
 
 @movie_router.post("/new")
 async def create_movie(new_movie: Movie,
