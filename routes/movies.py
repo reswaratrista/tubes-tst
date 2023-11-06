@@ -16,7 +16,7 @@ async def retrieve_all_movies(session=Depends(get_session)) -> List[Movie]:
     movies = session.exec(statement).all()
     return movies
 
-@movie_router.get("/movies/{movieId}")
+@movie_router.get("/{movieId}")
 def get_movie_by_id(movieId: int, session: Session = Depends(get_session)):
     user = session.exec(select(Movie).where(Movie.movieId == movieId)).first()
     if user is None:
