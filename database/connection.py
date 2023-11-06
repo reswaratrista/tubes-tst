@@ -7,7 +7,6 @@ from sqlmodel import SQLModel, Session, create_engine
 from models.users import User
 from models.movies import Movie
 from models.movieCategories import MovieCategory
-from models.similarities import Similarity
 from models.categories import Category
 from models.histories import History
 
@@ -29,7 +28,7 @@ class Settings(BaseSettings):
     async def initialize_database(self):
         client = AsyncIOMotorClient(self.DATABASE_URL)
         await init_beanie(database=client.get_default_database(),
-                          document_models=[User, Movie, Category, MovieCategory, Similarity, History])
+                          document_models=[User, Movie, Category, MovieCategory, History])
 
     class Config:
         env_file = ".env"
