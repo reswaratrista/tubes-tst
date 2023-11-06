@@ -45,11 +45,11 @@ async def get_movie_recommendations(session=Depends(get_session)):
 def update_avg_watch_time(session, movie_id):
     statement = select(History).where(History.movieId == movie_id)
     histories = session.exec(statement).all()
-    
+
     total_duration = 0
 
     for history in histories:
-        watched_duration = History.watchedDuration
+        watched_duration = history.watchedDuration
         # Parse watchedDuration to seconds
         hours, minutes, seconds = map(int, str(watched_duration).split(':'))
         total_duration += hours * 3600 + minutes * 60 + seconds
