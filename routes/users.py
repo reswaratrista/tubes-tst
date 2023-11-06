@@ -1,5 +1,6 @@
-from database.connection import Database
-from fastapi import APIRouter, HTTPException, status
+from sqlmodel import Session, select
+from database.connection import Database, get_session
+from fastapi import APIRouter, Depends, HTTPException, status
 from models.users import User, UserSignIn
 
 user_router = APIRouter(
@@ -8,6 +9,12 @@ user_router = APIRouter(
 
 user_database = Database(User)
 
+@user_router.get("/users/{username}")
+def get_user_by_username(username: str, session: Session = Depends(get_session)):
+    user = session.exec(select(User).where(User.username == username)).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
 
 @user_router.post("/signup")
 async def sign_user_up(user: User) -> dict:
@@ -41,3 +48,4 @@ async def sign_user_in(user: UserSignIn) -> dict:
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid details passed."
     )
+
