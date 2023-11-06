@@ -23,7 +23,7 @@ def get_movie_by_id(movieId: int, session: Session = Depends(get_session)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@movie_router.post("/newMovie")
+@movie_router.post("/new")
 async def create_movie(new_movie: Movie,
 session=Depends(get_session)) -> dict:
     session.add(new_movie)

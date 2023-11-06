@@ -30,17 +30,8 @@ async def retrieve_event(id: int, session=Depends(get_session)) -> Event:
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Event with supplied ID does not exist"
     )
-    raise HTTPException(
-       status_code=status.HTTP_404_NOT_FOUND,
-       detail="Event with supplied ID does not exist"
-    )
 
 @event_router.post("/new")
-#async def create_event(body: Event) -> dict:
-#    await event_database.save(body)
-#    return {
-#        "message": "Event created successfully"
-#    }
 async def create_event(new_event: Event,
 session=Depends(get_session)) -> dict:
     session.add(new_event)
