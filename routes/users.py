@@ -9,7 +9,7 @@ user_router = APIRouter(
 
 user_database = Database(User)
 
-@user_router.get("{username}")
+@user_router.get("/{username}")
 def get_user_by_username(username: str, session: Session = Depends(get_session)):
     user = session.exec(select(User).where(User.username == username)).first()
     if user is None:
