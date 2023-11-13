@@ -1,3 +1,5 @@
 # Tugas Besar II3160 Teknologi Sistem Terintegrasi
-## API Deployment Watched duration recommendation system
-### 18221122 Reswara Trista Aulia Candrakanti
+# 18221122 Reswara Trista Aulia Candrakanti
+## API Deployment - Recommendation system based on watched duration
+Updates on 13/11/2023:
+- Added authentication and authorization
