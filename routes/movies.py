@@ -4,7 +4,8 @@ from database.connection import Database, get_session
 from fastapi import APIRouter, Depends, HTTPException
 from models.movies import Movie, MovieUpdate, newMovie
 from models.histories import History
-from sqlmodel import Session, select, update
+from routes.users import get_current_user
+from sqlmodel import Session, select, update, desc
 
 movie_router = APIRouter(
     tags=["Movie"],
@@ -20,9 +21,9 @@ async def retrieve_all_movies(session=Depends(get_session)) -> List[Movie]:
     return movies
 
 @movie_router.get("/recommend")
-async def get_movie_recommendations(session=Depends(get_session)):
+async def get_movie_recommendations(session=Depends(get_session), user=Depends(get_current_user)):
     min_avg_watch_time: int = 0
-    statement = select(Movie).where(Movie.avgWatchTime > min_avg_watch_time).order_by(Movie.avgWatchTime)
+    statement = select(Movie).where(Movie.avgWatchTime > min_avg_watch_time).order_by(desc(Movie.avgWatchTime))
     recommended_movies = session.exec(statement).all()
     return recommended_movies
 
@@ -33,8 +34,8 @@ def get_movie_by_id(movieId: int, session: Session = Depends(get_session)):
         raise HTTPException(status_code=404, detail="User not found")
     return movie
 
-@movie_router.post("/new")
-async def create_movie(new_movie: newMovie, session=Depends(get_session)) -> dict:
+@movie_router.post("/addNewMovie")
+async def create_movie(new_movie: newMovie, session=Depends(get_session),  user=Depends(get_current_user)) -> dict:
     # Create a new Movie object
     new_movie_obj = Movie(
         movieName=new_movie.movieName,
@@ -88,7 +89,7 @@ def update_avg_watch_time(session, movie_id):
     session.commit()
 
 @movie_router.put("/{movie_id}", response_model=Movie)
-async def update_movie(movie_id: int, movie_update: MovieUpdate, session=Depends(get_session)) -> Movie:
+async def update_movie(movie_id: int, movie_update: MovieUpdate, session=Depends(get_session), user=Depends(get_current_user)) -> Movie:
     movie = session.get(Movie, movie_id)
     if not movie:
         raise HTTPException(status_code=404, detail="Movie not found")
@@ -103,7 +104,7 @@ async def update_movie(movie_id: int, movie_update: MovieUpdate, session=Depends
     return movie
 
 @movie_router.delete("/{movieId}", response_model=dict)
-async def delete_movie(movieId: int, session=Depends(get_session)) -> dict:
+async def delete_movie(movieId: int, session=Depends(get_session), user=Depends(get_current_user)) -> dict:
     movie = session.get(Movie, movieId)
     if movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")

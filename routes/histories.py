@@ -24,7 +24,7 @@ async def retrieve_all_history(movie_id: int, session=Depends(get_session)) -> H
         raise HTTPException(status_code=404, detail="History not found")
     return history
 
-@history_router.post("/new")
+@history_router.post("/watchMovie")
 async def create_history(new_history: newHistory, session=Depends(get_session)) -> dict:
     # Create a new History object
     new_history_obj = History(

@@ -1,13 +1,13 @@
 from typing import Optional, List
 from sqlmodel import JSON, SQLModel, Field, Column
 from pydantic import BaseModel, EmailStr
+from uuid import UUID 
 
 class User(SQLModel, table=True):
     username: str = Field(default=None, primary_key=True)
     name: str
     email: EmailStr
     password: str
-    gender: bool
 
     class Config:
         arbitrary_types_allowed = True
@@ -17,7 +17,6 @@ class User(SQLModel, table=True):
                 "name": "reswara trista",
                 "email" : "tatata@example.com",
                 "password": "1234567890",
-                "gender" : True
             }
         }
 
@@ -27,3 +26,11 @@ class User(SQLModel, table=True):
 class UserSignIn(BaseModel):
     username: str
     password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenPayload(BaseModel):
+    sub: str = None
+    exp: int = None
