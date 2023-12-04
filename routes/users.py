@@ -89,11 +89,11 @@ def sign_user_up(user: User, session: Session = Depends(get_session)) -> dict:
         name=user.name
     )
 
-    # Add and commit the new movie record
+
     session.add(new_user_obj)
     session.commit()
 
-    # Refresh the new movie object to obtain the generated movieId
+
     session.refresh(new_user_obj)
 
     return {
