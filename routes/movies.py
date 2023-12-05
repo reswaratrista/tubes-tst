@@ -6,6 +6,10 @@ from models.movies import Movie, MovieUpdate, newMovie
 from models.histories import History
 from routes.users import get_current_user
 from sqlmodel import Session, select, update, desc
+import requests
+
+from routes.utils import get_token
+
 
 movie_router = APIRouter(
     tags=["Movie"],
@@ -20,12 +24,48 @@ async def retrieve_all_movies(session=Depends(get_session)) -> List[Movie]:
     movies = session.exec(statement).all()
     return movies
 
-@movie_router.get("/recommend")
-async def get_movie_recommendations(session=Depends(get_session), user=Depends(get_current_user)):
+@movie_router.get("/recommendbyduration")
+async def get_movie_recommendations(session=Depends(get_session), user=Depends(get_current_user), amount: int = 10):
     min_avg_watch_time: int = 0
     statement = select(Movie).where(Movie.avgWatchTime > min_avg_watch_time).order_by(desc(Movie.avgWatchTime))
+    
+    # Add the limit to the query
+    statement = statement.limit(amount)
+    
     recommended_movies = session.exec(statement).all()
+
     return recommended_movies
+
+movie_router = APIRouter(tags=["Movie"])
+
+@movie_router.get("/recommendation_by_mood")
+async def get_movie_recommendations_by_mood(mood: str, max_amount: int = 20, user=Depends(get_current_user)):
+    access_token = get_token("reswaratrista", "12345")
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }   
+    
+    url = f"https://movie-rec-18221162.azurewebsites.net/movies/recommendations/?mood={mood}&max_amount={max_amount}"
+
+    try:
+        response = requests.post(url, headers=headers)
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise HTTPException(status_code=response.status_code, detail="Movie recommendation request failed")
+
+    except Exception as e:
+        # Handle any exceptions that may occur during the request
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+
+    # ambil dari cepus
+    # URL + /?mood={sad}&max_amount={20}
+    # requests.headers(... token)
+    # requests.post(URL)
+    # recommend_movies baru
+    # tambahin sama yang sebelumnya
 
 @movie_router.get("/{movieId}")
 def get_movie_by_id(movieId: int, session: Session = Depends(get_session)):

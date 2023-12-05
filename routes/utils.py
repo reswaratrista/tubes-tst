@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from typing import Union, Any
 from jose import jwt
 from dotenv import load_dotenv
+import requests
 load_dotenv()
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30  # 30 minutes
@@ -45,3 +46,20 @@ def create_refresh_token(subject: Union[str, Any], expires_delta: int = None) ->
     to_encode = {"exp": expires_delta, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, JWT_REFRESH_SECRET_KEY, ALGORITHM)
     return encoded_jwt
+
+
+def get_token(username: str, password: str):
+    login_url = "https://movie-rec-18221162.azurewebsites.net/users/login"
+    data = {
+        "username": username,
+        "password": password,
+    }
+
+    response = requests.post(login_url, json=data)
+    print(response)
+
+    if response.status_code == 200:
+        token = response.json().get("access_token")
+        return token
+    else:
+        raise ValueError(f"Failed to retrieve token. Status code: {response.status_code}, Response: {response.text}")

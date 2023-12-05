@@ -7,7 +7,7 @@ from database.connection import Database, get_session
 from fastapi import APIRouter, Depends, HTTPException, status, FastAPI
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
-from models.users import User, Token, TokenPayload
+from models.users import UpdateUser, User, Token, TokenPayload
 
 from routes.utils import (
     get_hashed_password,
@@ -116,3 +116,27 @@ async def login(
         "access_token": create_access_token(user.email),
         "token_type": "bearer"
     }
+
+@user_router.put("/update_profile", response_model=User)
+async def update_user_profile(
+    user_data: UpdateUser,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session),
+):
+    user = session.exec(select(User).where(User.email == current_user.email)).first()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+
+    # Update user profile
+    user.username = user_data.username
+    user.name = user_data.name
+    user.email = user_data.email
+    user.password = get_hashed_password(user_data.password)
+
+    session.commit()
+    session.refresh(user)
+
+    return user

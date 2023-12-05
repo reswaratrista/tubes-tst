@@ -34,3 +34,9 @@ class Token(BaseModel):
 class TokenPayload(BaseModel):
     sub: str = None
     exp: int = None
+
+class UpdateUser(BaseModel):
+    username: str
+    name: str
+    email: str
+    password: str
