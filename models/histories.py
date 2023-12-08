@@ -1,20 +1,18 @@
-from datetime import timedelta
-from typing import List
 from pydantic import BaseModel
-from sqlmodel import Relationship, SQLModel, Field
+from sqlmodel import SQLModel, Field
 class History(SQLModel, table=True):
     historyId: int = Field(default=None, primary_key=True)
     username: str = Field(default=None, foreign_key='user.username')
-    movieId: int = Field(default=None, foreign_key='movie.movieId')
-    watchedDuration: str
+    movieName: str = Field(default=None, foreign_key='movie.movieName')
+    watchedDuration: str 
     class Config:
         arbitrary_types_allowed = True
         schema_extra = {
             "example": {
                 "historyId": 1,
                 "username": "reswaratatak",
-                "movieId": 3,
-                "watchedDuration": "0:45:03"  # Adjust the format as needed
+                "movieName": "The Conjuring",
+                "watchedDuration": "0:45:03" 
             }
         }
     class Settings:
@@ -22,5 +20,5 @@ class History(SQLModel, table=True):
 
 class newHistory(BaseModel):
     username: str
-    movieId: int
+    movieName: str
     watchedDuration: str

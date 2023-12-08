@@ -24,7 +24,7 @@ async def retrieve_all_movies(session=Depends(get_session)) -> List[Movie]:
     movies = session.exec(statement).all()
     return movies
 
-@movie_router.get("/recommendbyduration")
+@movie_router.get("/recommend_by_duration")
 async def get_movie_recommendations(session=Depends(get_session), user=Depends(get_current_user), amount: int = 10):
     min_avg_watch_time: int = 0
     statement = select(Movie).where(Movie.avgWatchTime > min_avg_watch_time).order_by(desc(Movie.avgWatchTime))
@@ -35,8 +35,6 @@ async def get_movie_recommendations(session=Depends(get_session), user=Depends(g
     recommended_movies = session.exec(statement).all()
 
     return recommended_movies
-
-movie_router = APIRouter(tags=["Movie"])
 
 @movie_router.get("/recommendation_by_mood")
 async def get_movie_recommendations_by_mood(mood: str, max_amount: int = 20, user=Depends(get_current_user)):
@@ -96,8 +94,8 @@ async def create_movie(new_movie: newMovie, session=Depends(get_session),  user=
 
 
 
-def update_avg_watch_time(session, movie_id):
-    statement = select(History).where(History.movieId == movie_id)
+def update_avg_watch_time(session, movieName):
+    statement = select(History).where(History.movieName == movieName)
     histories = session.exec(statement).all()
 
     total_duration = 0
@@ -124,7 +122,7 @@ def update_avg_watch_time(session, movie_id):
     avg_watch_time_str = avg_watch_time.strftime("%H:%M:%S")
 
     # Update the movie's avgWatchTime
-    statement = update(Movie).where(Movie.movieId == movie_id).values(avgWatchTime=avg_watch_time_str)
+    statement = update(Movie).where(Movie.movieName == movieName).values(avgWatchTime=avg_watch_time_str)
     session.exec(statement)
     session.commit()
 

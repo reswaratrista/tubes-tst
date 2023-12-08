@@ -17,19 +17,25 @@ async def retrieve_all_histories(session=Depends(get_session)) -> List[History]:
     histories = session.exec(statement).all()
     return histories
 
-@history_router.get("/{movieId}", response_model=History)
-async def retrieve_all_history(movie_id: int, session=Depends(get_session)) -> History:
-    history = session.get(History, movie_id)
-    if history is None:
-        raise HTTPException(status_code=404, detail="History not found")
-    return history
+# @history_router.get("/{movieId}", response_model=History)
+# async def retrieve_all_history(movie_id: int, session=Depends(get_session)) -> History:
+#     history = session.get(History, movie_id)
+#     if history is None:
+#         raise HTTPException(status_code=404, detail="History not found")
+#     return history
+
+@history_router.get("/user/{username}", response_model=List[History])
+async def retrieve_user_history(username: str, session=Depends(get_session)) -> List[History]:
+    statement = select(History).where(History.username == username)
+    user_histories = session.exec(statement).all()
+    return user_histories
 
 @history_router.post("/watchMovie")
 async def create_history(new_history: newHistory, session=Depends(get_session)) -> dict:
     # Create a new History object
     new_history_obj = History(
         username=new_history.username,
-        movieId=new_history.movieId,
+        movieName=new_history.movieName,
         watchedDuration=new_history.watchedDuration,
     )
 
@@ -41,7 +47,7 @@ async def create_history(new_history: newHistory, session=Depends(get_session)) 
     session.refresh(new_history_obj)
 
     # Update the average watch time for the related movie
-    update_avg_watch_time(session, new_history.movieId)
+    update_avg_watch_time(session, new_history.movieName)
 
     return {
         "message": "History created successfully"
